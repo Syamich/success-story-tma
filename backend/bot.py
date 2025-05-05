@@ -1,9 +1,9 @@
 import asyncio
 from aiogram import Bot, Dispatcher
-from aiogram.types import Message
+from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
 from aiogram.filters import Command
 
-API_TOKEN = '7703114907:AAE-Bffp3W4XMcB0y3GghHez8E1hEW7x85Q'  # Замените на ваш токен
+API_TOKEN = '7703114907:AAE-Bffp3W4XMcB0y3GghHez8E1hEW7x85Q'
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
 
