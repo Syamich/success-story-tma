@@ -1,5 +1,5 @@
 import asyncio
-import uvicorn
+import os
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -184,13 +184,10 @@ async def start_bot():
     except Exception as e:
         logger.error(f"Bot polling error: {e}")
 
-async def main():
-    # Запуск бота в фоновой задаче
-    asyncio.create_task(start_bot())
-    # Запуск FastAPI
-    config = uvicorn.Config(app, host="0.0.0.0", port=8000, log_level="info")
-    server = uvicorn.Server(config)
-    await server.serve()
+# Запуск бота в фоновой задаче
+loop = asyncio.get_event_loop()
+loop.create_task(start_bot())
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
