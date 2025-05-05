@@ -1,9 +1,8 @@
 # build environment
-FROM node:18 AS build
+FROM node:16 AS build
 WORKDIR /app
 COPY package.json ./
-COPY package-lock.json ./
-RUN npm ci
+RUN npm install # Создаст package-lock.json
 COPY . ./
 RUN npm run build
 
