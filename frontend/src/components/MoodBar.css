@@ -1,0 +1,21 @@
+.mood-bar {
+    position: fixed;
+    left: 0;
+    top: 30px;
+    width: 30px;
+    height: calc(100vh - 90px);
+    background-color: #ddd;
+    z-index: 1000;
+}
+
+.mood-bar-fill {
+    width: 100%;
+    background-color: #4caf50;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transition: height 0.3s ease;
+}
