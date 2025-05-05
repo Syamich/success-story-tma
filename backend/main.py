@@ -90,7 +90,7 @@ async def get_player(user_id: str):
     logger.info(f"Fetching player with user_id: {user_id}")
     if user_id not in players:
         players[user_id] = create_player()
-        save_players()
+        save_players(players)
     return players[user_id]
 
 @app.options("/action")
@@ -125,7 +125,7 @@ async def perform_action(data: PlayerAction):
         message = f"Ты поел на помойке. Сытость +{satiety_increase}, здоровье -{health_decrease}, настроение -{mood_decrease}. Нашёл {bottles_found} бутылок. 🤢 "
         player['last_news'] = message
         player['day'] += 1
-        save_players()
+        save_players(players)  # Исправлено: передаём аргумент players
     else:
         message = "Действие не реализовано."
         action_success = False
