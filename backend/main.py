@@ -162,31 +162,31 @@ async def perform_action(data: PlayerAction):
 
     return {"player": player, "message": message}
 
-# Telegram Bot
-API_TOKEN = '7703114907:AAE-Bffp3W4XMcB0y3GghHez8E1hEW7x85Q'
-bot = Bot(token=API_TOKEN)
-dp = Dispatcher()
-
-@dp.message(Command(commands=['start']))
-async def start_command(message: Message):
-    keyboard = ReplyKeyboardMarkup(
-        keyboard=[
-            [KeyboardButton(text='Открыть игру', web_app=WebAppInfo(url='https://success-story-tma-production.up.railway.app'))]
-        ],
-        resize_keyboard=True
-    )
-    await message.reply('Нажми, чтобы начать игру!', reply_markup=keyboard)
-
-async def start_bot():
-    logger.info("Starting Telegram bot")
-    try:
-        await dp.start_polling(bot)
-    except Exception as e:
-        logger.error(f"Bot polling error: {e}")
-
-# Запуск бота в фоновой задаче
-loop = asyncio.get_event_loop()
-loop.create_task(start_bot())
+# # Telegram Bot
+# API_TOKEN = '7703114907:AAE-Bffp3W4XMcB0y3GghHez8E1hEW7x85Q'
+# bot = Bot(token=API_TOKEN)
+# dp = Dispatcher()
+#
+# @dp.message(Command(commands=['start']))
+# async def start_command(message: Message):
+#     keyboard = ReplyKeyboardMarkup(
+#         keyboard=[
+#             [KeyboardButton(text='Открыть игру', web_app=WebAppInfo(url='https://success-story-tma-production.up.railway.app'))]
+#         ],
+#         resize_keyboard=True
+#     )
+#     await message.reply('Нажми, чтобы начать игру!', reply_markup=keyboard)
+#
+# async def start_bot():
+#     logger.info("Starting Telegram bot")
+#     try:
+#         await dp.start_polling(bot)
+#     except Exception as e:
+#         logger.error(f"Bot polling error: {e}")
+#
+# # Запуск бота в фоновой задаче
+# loop = asyncio.get_event_loop()
+# loop.create_task(start_bot())
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 8000))
