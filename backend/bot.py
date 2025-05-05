@@ -9,10 +9,12 @@ dp = Dispatcher()
 
 @dp.message(Command(commands=['start']))
 async def start_command(message: Message):
-    keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
-    web_app = WebAppInfo(url='https://success-story-tma-production.up.railway.app')
-    button = KeyboardButton(text='Открыть игру', web_app=web_app)
-    keyboard.add(button)
+    keyboard = ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text='Открыть игру', web_app=WebAppInfo(url='https://success-story-tma-production.up.railway.app'))]
+        ],
+        resize_keyboard=True
+    )
     await message.reply('Нажми, чтобы начать игру!', reply_markup=keyboard)
 
 async def main():
