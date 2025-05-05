@@ -4,7 +4,7 @@ import './Menu.css';
 const Menu = ({ performAction }) => {
     if (typeof performAction !== 'function') {
         console.error('performAction is not a function:', performAction);
-        return <div>Error: Menu functionality is broken</div>;
+        return <div>Error: Menu functionality is broken. Check performAction prop.</div>;
     }
 
     return (
