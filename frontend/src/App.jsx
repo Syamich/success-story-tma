@@ -15,7 +15,7 @@ function App() {
   useEffect(() => {
     const userId = WebApp.initDataUnsafe.user?.id;
     if (userId) {
-      fetch(`https://your-backend.up.railway.app/player/${userId}`)
+      fetch(`https://backend-production-bc4d.up.railway.app/player/${userId}`)
         .then(res => res.json())
         .then(data => setPlayer(data))
         .catch(() => setPlayer(createPlayer()));
@@ -67,7 +67,7 @@ function App() {
 
   const handleAction = async (action) => {
     const userId = WebApp.initDataUnsafe.user?.id;
-    const response = await fetch('https://your-backend.up.railway.app/action', {
+    const response = await fetch('https://backend-production-bc4d.up.railway.app/action', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, action })
