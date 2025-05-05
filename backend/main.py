@@ -1,22 +1,27 @@
-import asyncio
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import json
 import random
+import logging
+
+# Настройка логирования
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
 # Настройка CORS
+logger.info("Setting up CORS middleware")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://success-story-tma-production.up.railway.app",
-        "http://localhost:3000"  # Для локальной разработки
+        "http://localhost:3000"
     ],
     allow_credentials=True,
-    allow_methods=["*"],  # Разрешить все методы (GET, POST, OPTIONS и т.д.)
-    allow_headers=["*"],  # Разрешить все заголовки
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
 )
 
 def load_players():
@@ -82,13 +87,20 @@ def create_player():
 
 @app.get("/player/{user_id}")
 async def get_player(user_id: str):
+    logger.info(f"Fetching player with user_id: {user_id}")
     if user_id not in players:
         players[user_id] = create_player()
         save_players()
     return players[user_id]
 
+@app.options("/action")
+async def options_action():
+    logger.info("Handling OPTIONS request for /action")
+    return {}
+
 @app.post("/action")
 async def perform_action(data: PlayerAction):
+    logger.info(f"Performing action: {data.action} for user_id: {data.userId}")
     user_id = data.userId
     action = data.action
     if user_id not in players:
