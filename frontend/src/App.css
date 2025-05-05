@@ -1,15 +1,53 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+}
+
 .app-container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Roboto', sans-serif;
+    background: #f9f9f9;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+    padding: 40px 40px 70px 40px;
+    overflow-y: auto;
+}
+
+.main-menu {
+    text-align: center;
 }
 
 .player-stats {
     margin-bottom: 20px;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+}
+
+.currency-section {
+    margin: 20px 0;
+}
+
+.currency-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .message {
     margin-top: 10px;
     color: #333;
+    font-style: italic;
+    text-align: center;
 }
