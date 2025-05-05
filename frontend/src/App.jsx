@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Menu from './components/Menu';
+import HealthBar from './components/HealthBar';
+import MoodBar from './components/MoodBar';
+import SatietyBar from './components/SatietyBar';
+import Tabs from './components/Tabs';
 import './App.css';
 
 const App = () => {
     const [player, setPlayer] = useState(null);
     const [message, setMessage] = useState('');
+    const [currentTab, setCurrentTab] = useState(0); // 0: Главное меню, 1: Действия
     const userId = 'test123';
 
     useEffect(() => {
@@ -42,23 +47,60 @@ const App = () => {
 
     return (
         <div className="app-container">
-            <h1>История успеха</h1>
-            {player ? (
-                <div className="player-stats">
-                    <p>💉 Здоровье: {player.health}</p>
-                    <p>🍽️ Сытость: {player.satiety}</p>
-                    <p>😊 Настроение: {player.mood}</p>
-                    <p>💰 Рубли: {player.money}</p>
-                    <p>💵 Доллары: {player.dollars}</p>
-                    <p>📅 День: {player.day}</p>
-                    <p>🍼 Бутылки: {player.bottles}</p>
-                    <p>{player.last_news}</p>
-                </div>
-            ) : (
-                <p>Загрузка данных игрока...</p>
+            {/* Статус-бары */}
+            {player && (
+                <>
+                    <HealthBar value={player.health} />
+                    <MoodBar value={player.mood} />
+                    <SatietyBar value={player.satiety} />
+                </>
             )}
-            <Menu performAction={performAction} />
-            {message && <p className="message">{message}</p>}
+
+            {/* Основное содержимое */}
+            <div className="content">
+                {currentTab === 0 ? (
+                    // Вкладка 1: Главное меню
+                    <div className="main-menu">
+                        <h1>История успеха</h1>
+                        {player ? (
+                            <div className="player-stats">
+                                <p>💉 Здоровье: {player.health}</p>
+                                <p>🍽️ Сытость: {player.satiety}</p>
+                                <p>😊 Настроение: {player.mood}</p>
+                                <p>💰 Рубли: {player.money}</p>
+                                <p>💵 Доллары: {player.dollars}</p>
+                                <p>📅 День: {player.day}</p>
+                                <p>🍼 Бутылки: {player.bottles}</p>
+                                <p>{player.last_news}</p>
+                            </div>
+                        ) : (
+                            <p>Загрузка данных игрока...</p>
+                        )}
+                        {/* Курс и кнопки для покупки/продажи валюты */}
+                        <div className="currency-section">
+                            <p>Курс: 1 💵 = 100 💰</p>
+                            <div className="currency-buttons">
+                                <button className="menu-button">Купить 💵</button>
+                                <button className="menu-button">Продать 💵</button>
+                            </div>
+                        </div>
+                        {/* Кнопка для продажи бутылок */}
+                        <button
+                            className="menu-button"
+                            onClick={() => performAction('sell_bottles')}
+                        >
+                            🥤 Продать бутылки
+                        </button>
+                    </div>
+                ) : (
+                    // Вкладка 2: Действия
+                    <Menu performAction={performAction} />
+                )}
+                {message && <p className="message">{message}</p>}
+            </div>
+
+            {/* Нижнее меню с вкладками */}
+            <Tabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
         </div>
     );
 };
