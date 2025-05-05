@@ -1,9 +1,15 @@
-from fastapi import FastAPI
+import asyncio
+import uvicorn
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import json
 import random
 import logging
+from aiogram import Bot, Dispatcher
+from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
+from aiogram.filters import Command
+from starlette.responses import JSONResponse
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
@@ -23,6 +29,21 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
+
+# Обработка ошибок для CORS
+@app.exception_handler(Exception)
+async def custom_exception_handler(request, exc):
+    logger.error(f"Server error: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal Server Error"},
+        headers={
+            "Access-Control-Allow-Origin": "https://success-story-tma-production.up.railway.app",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Credentials": "true"
+        }
+    )
 
 def load_players():
     try:
@@ -96,7 +117,16 @@ async def get_player(user_id: str):
 @app.options("/action")
 async def options_action():
     logger.info("Handling OPTIONS request for /action")
-    return {}
+    return JSONResponse(
+        status_code=200,
+        content={},
+        headers={
+            "Access-Control-Allow-Origin": "https://success-story-tma-production.up.railway.app",
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Credentials": "true"
+        }
+    )
 
 @app.post("/action")
 async def perform_action(data: PlayerAction):
@@ -125,9 +155,42 @@ async def perform_action(data: PlayerAction):
         message = f"Ты поел на помойке. Сытость +{satiety_increase}, здоровье -{health_decrease}, настроение -{mood_decrease}. Нашёл {bottles_found} бутылок. 🤢 "
         player['last_news'] = message
         player['day'] += 1
-        save_players(players)  # Исправлено: передаём аргумент players
+        save_players(players)
     else:
         message = "Действие не реализовано."
         action_success = False
 
     return {"player": player, "message": message}
+
+# Telegram Bot
+API_TOKEN = '7703114907:AAE-Bffp3W4XMcB0y3GghHez8E1hEW7x85Q'
+bot = Bot(token=API_TOKEN)
+dp = Dispatcher()
+
+@dp.message(Command(commands=['start']))
+async def start_command(message: Message):
+    keyboard = ReplyKeyboardMarkup(
+        keyboard=[
+            [KeyboardButton(text='Открыть игру', web_app=WebAppInfo(url='https://success-story-tma-production.up.railway.app'))]
+        ],
+        resize_keyboard=True
+    )
+    await message.reply('Нажми, чтобы начать игру!', reply_markup=keyboard)
+
+async def start_bot():
+    logger.info("Starting Telegram bot")
+    try:
+        await dp.start_polling(bot)
+    except Exception as e:
+        logger.error(f"Bot polling error: {e}")
+
+async def main():
+    # Запуск бота в фоновой задаче
+    asyncio.create_task(start_bot())
+    # Запуск FastAPI
+    config = uvicorn.Config(app, host="0.0.0.0", port=8000, log_level="info")
+    server = uvicorn.Server(config)
+    await server.serve()
+
+if __name__ == '__main__':
+    asyncio.run(main())
