@@ -9,18 +9,22 @@ const Menu = ({ performAction }) => {
 
     return (
         <div className="menu-container">
-            <button className="menu-button" onClick={() => performAction('eat_dump')}>
-                🤢 Пожрать на помойке
-            </button>
-            <button className="menu-button" onClick={() => performAction('sell_bottles')}>
-                🥤 Сдать бутылки
-            </button>
-            <button className="menu-button" disabled>
-                🍔 Купить еду
-            </button>
-            <button className="menu-button" disabled>
-                💼 Поработать
-            </button>
+            <h2>Действия</h2>
+            <div className="category">
+                <h3>🍽️ Еда</h3>
+                <button className="menu-button" onClick={() => performAction('eat_dump')}>
+                    🤢 Пожрать на помойке
+                </button>
+                <button className="menu-button" disabled>
+                    🍔 Купить еду
+                </button>
+            </div>
+            <div className="category">
+                <h3>😊 Настроение</h3>
+                <button className="menu-button" disabled>
+                    🎭 Улучшить настроение
+                </button>
+            </div>
         </div>
     );
 };
