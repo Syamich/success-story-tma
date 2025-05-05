@@ -1,4 +1,3 @@
-// File: frontend/src/App.jsx
 import { useState, useEffect } from 'react';
 import WebApp from '@twa-dev/sdk';
 import StatusBar from './components/StatusBar';
@@ -13,12 +12,27 @@ function App() {
   const [notification, setNotification] = useState('');
 
   useEffect(() => {
-    const userId = WebApp.initDataUnsafe.user?.id;
+    const userId = WebApp.initDataUnsafe.user?.id || 'test123'; // Временный userId для тестов
+    console.log('User ID:', userId); // Для отладки
     if (userId) {
       fetch(`https://backend-production-bc4d.up.railway.app/player/${userId}`)
-        .then(res => res.json())
-        .then(data => setPlayer(data))
-        .catch(() => setPlayer(createPlayer()));
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(data => {
+          console.log('Player data:', data); // Для отладки
+          setPlayer(data);
+        })
+        .catch(error => {
+          console.error('Error fetching player:', error);
+          setPlayer(createPlayer());
+        });
+    } else {
+      console.error('No userId found');
+      setPlayer(createPlayer());
     }
   }, []);
 
@@ -66,16 +80,26 @@ function App() {
   });
 
   const handleAction = async (action) => {
-    const userId = WebApp.initDataUnsafe.user?.id;
-    const response = await fetch('https://backend-production-bc4d.up.railway.app/action', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, action })
-    });
-    const { player: updatedPlayer, message } = await response.json();
-    setPlayer(updatedPlayer);
-    setNotification(message);
-    setTimeout(() => setNotification(''), 3000);
+    const userId = WebApp.initDataUnsafe.user?.id || 'test123';
+    console.log('Performing action:', action, 'for user:', userId); // Для отладки
+    try {
+      const response = await fetch('https://backend-production-bc4d.up.railway.app/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, action })
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const { player: updatedPlayer, message } = await response.json();
+      setPlayer(updatedPlayer);
+      setNotification(message);
+      setTimeout(() => setNotification(''), 3000);
+    } catch (error) {
+      console.error('Error performing action:', error);
+      setNotification('Ошибка при выполнении действия');
+      setTimeout(() => setNotification(''), 3000);
+    }
   };
 
   if (!player) return <div>Загрузка...</div>;
