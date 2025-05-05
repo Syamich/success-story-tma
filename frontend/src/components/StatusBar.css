@@ -1,0 +1,11 @@
+// File: frontend/src/components/StatusBar.css
+.status-bar {
+  padding: 10px;
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-bottom: 1px solid var(--tg-theme-hint-color);
+}
+
+.status-bar p {
+  margin: 5px 0;
+  font-size: 14px;
+}
