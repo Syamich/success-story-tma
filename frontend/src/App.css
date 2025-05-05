@@ -1,9 +1,15 @@
+.app-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
 
-.App {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  background-color: var(--tg-theme-bg-color);
-  color: var(--tg-theme-text-color);
-  font-family: Arial, sans-serif;
+.player-stats {
+    margin-bottom: 20px;
+}
+
+.message {
+    margin-top: 10px;
+    color: #333;
 }
