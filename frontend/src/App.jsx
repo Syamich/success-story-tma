@@ -11,24 +11,26 @@ const App = () => {
         const fetchPlayer = async () => {
             try {
                 const response = await fetch(`https://backend-production-bc4d.up.railway.app/player/${userId}`);
-                if (!response.ok) throw new Error('Network response was not ok');
+                if (!response.ok) throw new Error(`Failed to fetch player: ${response.status}`);
                 const data = await response.json();
                 setPlayer(data);
             } catch (error) {
                 console.error('Error fetching player:', error);
+                setMessage('Ошибка загрузки данных игрока');
             }
         };
         fetchPlayer();
     }, []);
 
     const performAction = async (action) => {
+        console.log('Performing action:', action, 'for user:', userId);
         try {
             const response = await fetch('https://backend-production-bc4d.up.railway.app/action', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ userId, action }),
             });
-            if (!response.ok) throw new Error('Network response was not ok');
+            if (!response.ok) throw new Error(`Failed to perform action: ${response.status}`);
             const data = await response.json();
             setPlayer(data.player);
             setMessage(data.message);
@@ -41,7 +43,7 @@ const App = () => {
     return (
         <div className="app-container">
             <h1>История успеха</h1>
-            {player && (
+            {player ? (
                 <div className="player-stats">
                     <p>💉 Здоровье: {player.health}</p>
                     <p>🍽️ Сытость: {player.satiety}</p>
@@ -52,6 +54,8 @@ const App = () => {
                     <p>🍼 Бутылки: {player.bottles}</p>
                     <p>{player.last_news}</p>
                 </div>
+            ) : (
+                <p>Загрузка данных игрока...</p>
             )}
             <Menu performAction={performAction} />
             {message && <p className="message">{message}</p>}
