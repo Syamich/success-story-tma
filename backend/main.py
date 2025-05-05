@@ -1,10 +1,23 @@
-
+import asyncio
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import json
 import random
 
 app = FastAPI()
+
+# Настройка CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://success-story-tma-production.up.railway.app",
+        "http://localhost:3000"  # Для локальной разработки
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],  # Разрешить все методы (GET, POST, OPTIONS и т.д.)
+    allow_headers=["*"],  # Разрешить все заголовки
+)
 
 def load_players():
     try:
